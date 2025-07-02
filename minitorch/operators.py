@@ -99,7 +99,7 @@ def sigmoid(x: float) -> float:
 # - relu
 def relu(x: float) -> float:
     """Applies the ReLu activation function"""
-    return max(x, 0)
+    return max(x, 0.0)
 
 
 # - log
