@@ -38,7 +38,7 @@ def add(x: float, y: float) -> float:
 # - neg
 def neg(x: float) -> float:
     """Negates a number"""
-    return -x
+    return -1.0 * x
 
 
 # - lt
