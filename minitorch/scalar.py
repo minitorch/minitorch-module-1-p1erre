@@ -176,6 +176,8 @@ class Scalar:
         # TODO: Implement for Task 1.3.
         assert h.inputs
         grad = h.last_fn.backward(h.ctx, d_output)
+        if isinstance(grad, float):
+            grad = (grad, )
         assert len(grad) == len(h.inputs)
         return zip(h.inputs, grad)
 

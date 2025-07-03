@@ -63,8 +63,25 @@ def topological_sort(variable: Variable) -> Iterable[Variable]:
     Returns:
         Non-constant Variables in topological order starting from the right.
     """
+    # We are assuming that the graph have NOT multiple edges between two nodes
     # TODO: Implement for Task 1.4.
-    raise NotImplementedError("Need to implement for Task 1.4")
+    
+    # this solution assumes that the computation graph is a DAG
+
+    ordered_variables = []
+
+    def visit(v: Variable):
+        # fix easily with a marked dictionary
+        if any([v.unique_id == o.unique_id for o in ordered_variables]): # this is going to be very inneficient for big graphs
+            return
+        for p in v.parents:
+            if not p.is_constant():
+                visit(p)
+        ordered_variables.insert(0, v)
+
+    visit(variable)
+
+    return ordered_variables
 
 
 def backpropagate(variable: Variable, deriv: Any) -> None:
@@ -79,8 +96,26 @@ def backpropagate(variable: Variable, deriv: Any) -> None:
     No return. Should write to its results to the derivative values of each leaf through `accumulate_derivative`.
     """
     # TODO: Implement for Task 1.4.
-    raise NotImplementedError("Need to implement for Task 1.4")
+    ordered_vars = topological_sort(variable)
+    assert ordered_vars[0].unique_id == variable.unique_id
 
+    non_leaf_var_deriv = {}
+    non_leaf_var_deriv[variable.unique_id] = deriv    
+
+    for var in ordered_vars:
+
+        if var.is_leaf():
+            continue
+        
+        dvar = non_leaf_var_deriv[var.unique_id]
+        parents = var.chain_rule(dvar)
+        for pv, d in parents:
+            if pv.is_leaf():
+                pv.accumulate_derivative(d)
+            elif pv.unique_id not in non_leaf_var_deriv.keys():
+                non_leaf_var_deriv[pv.unique_id] = d
+            else:
+                non_leaf_var_deriv[pv.unique_id] += d
 
 @dataclass
 class Context:
