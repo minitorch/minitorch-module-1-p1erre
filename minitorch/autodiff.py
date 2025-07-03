@@ -69,15 +69,16 @@ def topological_sort(variable: Variable) -> Iterable[Variable]:
     # this solution assumes that the computation graph is a DAG
 
     ordered_variables = []
+    marked_variables = set()
 
     def visit(v: Variable):
-        # fix easily with a marked dictionary
-        if any([v.unique_id == o.unique_id for o in ordered_variables]): # this is going to be very inneficient for big graphs
+        if v.unique_id in marked_variables: 
             return
         for p in v.parents:
             if not p.is_constant():
                 visit(p)
         ordered_variables.insert(0, v)
+        marked_variables.add(v.unique_id)
 
     visit(variable)
 
