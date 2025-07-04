@@ -157,7 +157,7 @@ class Sigmoid(ScalarFunction):
         # TODO: Implement for Task 1.4.
         (a, ) = ctx.saved_values
         fx = operators.sigmoid(a)
-        return fx * (1 - fx)
+        return d_output * fx * (1 - fx)
 
 
 class ReLU(ScalarFunction):
